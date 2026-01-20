@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整数据库表结构文档 - 第三部分</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #455A64;
+            border-left: 4px solid #4CAF50;
+            padding-left: 10px;
+            margin-top: 30px;
+        }
+        .table-info {
+            background-color: #E3F2FD;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .primary-key {
+            background-color: #FFEBEE; /* 红色系，主键 */
+            font-weight: bold;
+        }
+        .foreign-key {
+            background-color: #E8F5E8; /* 绿色系，外键 */
+        }
+        .relation-field {
+            background-color: #FFF3E0; /* 橙色系，关联字段 */
+        }
+        .self-relation {
+            background-color: #F3E5F5; /* 紫色系，自关联字段 */
+        }
+        .nav-menu {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .legend {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .legend-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+        }
+        .primary-key-legend { background-color: #FFEBEE; }
+        .foreign-key-legend { background-color: #E8F5E8; }
+        .relation-field-legend { background-color: #FFF3E0; }
+        .self-relation-legend { background-color: #F3E5F5; }
+        .table-of-contents {
+            margin-bottom: 20px;
+        }
+        .toc-item {
+            margin: 3px 0;
+        }
+        .toc-link {
+            text-decoration: none;
+            color: #1976D2;
+        }
+        .toc-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>完整数据库表结构文档 - 第三部分</h1>
+        
+        <div class="legend">
+            <h3>图例</h3>
+            <div class="legend-item">
+                <div class="legend-color primary-key-legend"></div>
+                <span>主键 (Primary Key)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color foreign-key-legend"></div>
+                <span>外键 (Foreign Key) - 指向其他表的字段</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color relation-field-legend"></div>
+                <span>关联字段 (Relation Field) - 与其他表有业务关联的字段</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color self-relation-legend"></div>
+                <span>自关联字段 (Self-Reference) - 指向同一表的字段</span>
+            </div>
+        </div>
+
+        <!-- seal_history 表 (续) -->
+        <h2 id="table-seal_history">seal_history - 公章使用记录</h2>
+        <div class="table-info">
+            <strong>表名:</strong> seal_history &nbsp;&nbsp;
+            <strong>中文名:</strong> 公章使用记录 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储公章使用的历史记录
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>uid</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户ID（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>seal_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>公章ID（关联seal表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>form_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单ID</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>component</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>组件</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>form_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单版本ID（关联app_module_version表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>form_record_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单记录ID</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>应用版本ID（关联app_version表）</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- third_seal_record 表 -->
+        <h2 id="table-third_seal_record">third_seal_record - 第三方印章记录</h2>
+        <div class="table-info">
+            <strong>表名:</strong> third_seal_record &nbsp;&nbsp;
+            <strong>中文名:</strong> 第三方印章记录 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储第三方印章使用记录
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>SERIAL</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>uid</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户ID（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>third_sn</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>第三方序列号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>varchar(256)</td>
+                    <td>256</td>
+                    <td>NOT NULL</td>
+                    <td>标题</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>platform_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>平台ID（关联thirdparty_platform表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>component</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>组件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>scene</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>场景</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>form_record_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单记录ID</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>form_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单版本ID（关联app_module_version表）</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- third_seal_step 表 -->
+        <h2 id="table-third_seal_step">third_seal_step - 第三方印章步骤</h2>
+        <div class="table-info">
+            <strong>表名:</strong> third_seal_step &nbsp;&nbsp;
+            <strong>中文名:</strong> 第三方印章步骤 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储第三方印章处理步骤
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>SERIAL</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>seal_record_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>印章记录ID（关联third_seal_record表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>task_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>任务ID（关联task_todo表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>node_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>节点ID（关联proc_node表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>before_files</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>前置文件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>after_files</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>后置文件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>log</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>日志</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>file_type</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>文件类型</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- report_v2 表 -->
+        <h2 id="table-report_v2">report_v2 - 新版报表</h2>
+        <div class="table-info">
+            <strong>表名:</strong> report_v2 &nbsp;&nbsp;
+            <strong>中文名:</strong> 新版报表 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储新版报表信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(256)</td>
+                    <td>256</td>
+                    <td>NOT NULL</td>
+                    <td>报表名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>app_id</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项数组</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>logo</td>
+                    <td>varchar(50)</td>
+                    <td>50</td>
+                    <td>NOT NULL</td>
+                    <td>图标token</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>报表类型：1.普通报表 2.原5.0普通报表 3.原5.0图形报表 4.三方报表 5.脚本报表</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>varchar(256)</td>
+                    <td>256</td>
+                    <td>NOT NULL</td>
+                    <td>报表标题</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data_source_config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据来源关联信息</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>global_condition</td>
+                    <td>varchar(1280)</td>
+                    <td>1280</td>
+                    <td>NOT NULL</td>
+                    <td>全局条件公式</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>search_set</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>查询配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>result_set</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>结果配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>page_set</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>页面配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>url_config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>链接配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>visible_roles</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>可见范围</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>export_roles</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>可导出范围</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>export_info</td>
+                    <td>varchar(256)</td>
+                    <td>256</td>
+                    <td>NOT NULL</td>
+                    <td>导出提示文案</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态：-1 已删除 0 未发布 1已发布</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>updated</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>更新时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- payment_order 表 -->
+        <h2 id="table-payment_order">payment_order - 订单表</h2>
+        <div class="table-info">
+            <strong>表名:</strong> payment_order &nbsp;&nbsp;
+            <strong>中文名:</strong> 订单表 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储支付订单信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>uid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>用户ID（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>项目名称</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>platform_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>商户ID（关联thirdparty_platform表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项ID（关联app表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>业务信息</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>order_no</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>订单号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>platform</td>
+                    <td>varchar</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>支付项目平台</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>out_order_no</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>外部订单号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>amount</td>
+                    <td>numeric (10, 2)</td>
+                    <td>10, 2</td>
+                    <td>NOT NULL</td>
+                    <td>支付金额</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>time</td>
+                    <td>timestamp</td>
+                    <td></td>
+                    <td></td>
+                    <td>支付时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>expire_time</td>
+                    <td>timestamp</td>
+                    <td></td>
+                    <td></td>
+                    <td>订单过期时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>支付状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>result</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>平台上此订单的信息</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- payment_refund 表 -->
+        <h2 id="table-payment_refund">payment_refund - 退款表</h2>
+        <div class="table-info">
+            <strong>表名:</strong> payment_refund &nbsp;&nbsp;
+            <strong>中文名:</strong> 退款表 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储退款信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>goods_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>支付项目ID（关联payment_goods表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>order_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>订单ID（关联payment_order表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>事项ID（关联app表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>out_order_no</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>外部订单号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>pay_time</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>支付时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>退款状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>退款类型：0申请退款 1管理员退款</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>uid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>用户ID（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>department_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>部门ID（关联department表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>amount</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>支付金额（分）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>reason</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>退款说明</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>operator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NOT NULL</td>
+                    <td>审批人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>operated</td>
+                    <td>timestamp</td>
+                    <td></td>
+                    <td></td>
+                    <td>审批时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>operation_reason</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>审批说明</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>result</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>结果</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- payment_goods 表 -->
+        <h2 id="table-payment_goods">payment_goods - 支付项目表</h2>
+        <div class="table-info">
+            <strong>表名:</strong> payment_goods &nbsp;&nbsp;
+            <strong>中文名:</strong> 支付项目表 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储支付项目信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>项目名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>preset_fees</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>预设金额</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>custom_config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>自定义配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>platforms</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>可支付平台id</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>platform_config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>平台使用的参数</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>refund_config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>退款配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>is_del</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否删除</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_fill 表 -->
+        <h2 id="table-app_fill">app_fill - 事项填报</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_fill &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项填报 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储事项填报信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项ID（关联app表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态：1 未发布 2已发布 3隐藏/删除</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>start_time</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>开始时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>end_time</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>结束时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>time_rule</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>时间规则</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>users_type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>job_ids</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>岗位ID数组</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>users</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>last_create_time</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>最后创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>period_number</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>期次编号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable_refill</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>启用重新填报</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_fill_authorize 表 -->
+        <h2 id="table-app_fill_authorize">app_fill_authorize - 事项填报授权</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_fill_authorize &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项填报授权 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储事项填报授权信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>fill_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>填报ID（关联app_fill表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>users</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>roles</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>角色</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>range_type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>范围类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>range_ids</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>范围ID数组</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_fill_period 表 -->
+        <h2 id="table-app_fill_period">app_fill_period - 事项填报期次</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_fill_period &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项填报期次 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储事项填报期次信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>fill_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>填报ID（关联app_fill表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>period_number</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>期次编号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>end_time</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>期次结束时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- proc_variable 表 -->
+        <h2 id="table-proc_variable">proc_variable - 流程运行中环境变量</h2>
+        <div class="table-info">
+            <strong>表名:</strong> proc_variable &nbsp;&nbsp;
+            <strong>中文名:</strong> 流程运行中环境变量 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储流程运行中的环境变量
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>execute_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>执行ID（关联proc_execute表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>变量名</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>value</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>变量值</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- proc_log 表 -->
+        <h2 id="table-proc_log">proc_log - 流程日志</h2>
+        <div class="table-info">
+            <strong>表名:</strong> proc_log &nbsp;&nbsp;
+            <strong>中文名:</strong> 流程日志 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储流程日志信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>department_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>部门ID（关联department表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>node_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>节点ID（关联proc_node表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>uid</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>用户ID（关联users表）</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- form_data_change 表 -->
+        <h2 id="table-form_data_change">form_data_change - 表单数据变更</h2>
+        <div class="table-info">
+            <strong>表名:</strong> form_data_change &nbsp;&nbsp;
+            <strong>中文名:</strong> 表单数据变更 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储表单数据变更信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>json</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- form_data_log 表 -->
+        <h2 id="table-form_data_log">form_data_log - 表单数据日志</h2>
+        <div class="table-info">
+            <strong>表名:</strong> form_data_log &nbsp;&nbsp;
+            <strong>中文名:</strong> 表单数据日志 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储表单数据变更日志
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID（关联app_session表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>task_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>任务ID（关联task_todo表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>json</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>create_name</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>创建人姓名</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- form_draft 表 -->
+        <h2 id="table-form_draft">form_draft - 草稿</h2>
+        <div class="table-info">
+            <strong>表名:</strong> form_draft &nbsp;&nbsp;
+            <strong>中文名:</strong> 草稿 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储表单草稿信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项ID（关联app表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>task_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>任务ID（关联task_todo表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>应用版本ID（关联app_version表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>is_auto_save</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否自动保存</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>department_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>部门ID（关联department表）</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>agent_for</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>替他人代发起</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>data</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- trigger 表 -->
+        <h2 id="table-trigger">trigger - 触发器</h2>
+        <div class="table-info">
+            <strong>表名:</strong> trigger &nbsp;&nbsp;
+            <strong>中文名:</strong> 触发器 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储自定义触发器信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>应用版本ID（关联app_version表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>类型：非内置模板，使用validate.$id格式</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>events</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事件数组</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>priority</td>
+                    <td>INT</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>优先级</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否启用</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- trigger_type 表 -->
+        <h2 id="table-trigger_type">trigger_type - 触发器类型</h2>
+        <div class="table-info">
+            <strong>表名:</strong> trigger_type &nbsp;&nbsp;
+            <strong>中文名:</strong> 触发器类型 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储触发器类型信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>varchar(16)</td>
+                    <td>16</td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>events</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事件数组</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>app_ids</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项数组，-1的全部可用</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- crontab 表 -->
+        <h2 id="table-crontab">crontab - 计划任务</h2>
+        <div class="table-info">
+            <strong>表名:</strong> crontab &nbsp;&nbsp;
+            <strong>中文名:</strong> 计划任务 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储计划任务信息
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>rule</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>规则</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>last_state</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>最后状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否启用</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>task</td>
+                    <td>text</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>任务</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人（关联users表）</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- crontab_history 表 -->
+        <h2 id="table-crontab_history">crontab_history - 计划任务日志</h2>
+        <div class="table-info">
+            <strong>表名:</strong> crontab_history &nbsp;&nbsp;
+            <strong>中文名:</strong> 计划任务日志 &nbsp;&nbsp;
+            <strong>描述:</strong> 存储计划任务执行日志
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>crontab_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>计划任务ID（关联crontab表）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>text</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>内容</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>is_system</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否系统</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>finished</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>完成时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- thirdparty_platform 表 -->
+        <h2 id="table-thirdparty_platform">thirdparty_platform - 第三方平台</h2>
+        <div class="table-info">
+            <strong>表名:</strong> thirdparty_platform &nbsp;&nbsp;
+            <strong>中文名:</strong>

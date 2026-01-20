@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整数据库表结构文档 - 完整版</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #455A64;
+            border-left: 4px solid #4CAF50;
+            padding-left: 10px;
+            margin-top: 30px;
+        }
+        .table-info {
+            background-color: #E3F2FD;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .primary-key {
+            background-color: #FFEBEE; /* 红色系，主键 */
+            font-weight: bold;
+        }
+        .foreign-key {
+            background-color: #E8F5E8; /* 绿色系，外键 */
+        }
+        .relation-field {
+            background-color: #FFF3E0; /* 橙色系，关联字段 */
+        }
+        .self-relation {
+            background-color: #F3E5F5; /* 紫色系，自关联字段 */
+        }
+        .nav-menu {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .legend {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .legend-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+        }
+        .primary-key-legend { background-color: #FFEBEE; }
+        .foreign-key-legend { background-color: #E8F5E8; }
+        .relation-field-legend { background-color: #FFF3E0; }
+        .self-relation-legend { background-color: #F3E5F5; }
+        .table-of-contents {
+            margin-bottom: 20px;
+        }
+        .toc-item {
+            margin: 3px 0;
+        }
+        .toc-link {
+            text-decoration: none;
+            color: #1976D2;
+        }
+        .toc-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>完整数据库表结构文档 - 完整版</h1>
+        
+        <div class="legend">
+            <h3>图例</h3>
+            <div class="legend-item">
+                <div class="legend-color primary-key-legend"></div>
+                <span>主键 (Primary Key)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color foreign-key-legend"></div>
+                <span>外键 (Foreign Key) - 指向其他表的字段</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color relation-field-legend"></div>
+                <span>关联字段 (Relation Field) - 与其他表有业务关联的字段</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color self-relation-legend"></div>
+                <span>自关联字段 (Self-Reference) - 指向同一表的字段</span>
+            </div>
+        </div>
+        
+        <div class="table-of-contents">
+            <h3>目录</h3>
+            <div class="toc-item"><a href="#table-app_attribute" class="toc-link">app_attribute - 事项属性</a></div>
+            <div class="toc-item"><a href="#table-app_category" class="toc-link">app_category - 事项服务分类</a></div>
+            <div class="toc-item"><a href="#table-app" class="toc-link">app - 事项表</a></div>
+            <div class="toc-item"><a href="#table-app_administrator_config" class="toc-link">app_administrator_config - 应用管理员配置</a></div>
+            <div class="toc-item"><a href="#table-app_version" class="toc-link">app_version - 事项版本</a></div>
+            <div class="toc-item"><a href="#table-app_module" class="toc-link">app_module - 应用组件</a></div>
+            <div class="toc-item"><a href="#table-app_module_version" class="toc-link">app_module_version - 组件版本</a></div>
+            <div class="toc-item"><a href="#table-app_node_stat" class="toc-link">app_node_stat - 应用节点统计</a></div>
+            <div class="toc-item"><a href="#table-app_form_auth" class="toc-link">app_form_auth - 事项表单权限</a></div>
+            <div class="toc-item"><a href="#table-trigger_type" class="toc-link">trigger_type - 触发器模板</a></div>
+            <div class="toc-item"><a href="#table-trigger" class="toc-link">trigger - 触发器</a></div>
+            <div class="toc-item"><a href="#table-app_stat" class="toc-link">app_stat - 统计</a></div>
+            <div class="toc-item"><a href="#table-proc_node" class="toc-link">proc_node - 流程环节</a></div>
+            <div class="toc-item"><a href="#table-app_session" class="toc-link">app_session - 代发起</a></div>
+            <div class="toc-item"><a href="#table-app_session_status" class="toc-link">app_session_status - 会话状态</a></div>
+            <div class="toc-item"><a href="#table-form_data" class="toc-link">form_data - 表单数据</a></div>
+            <div class="toc-item"><a href="#table-form_data_change" class="toc-link">form_data_change - 表单数据变更</a></div>
+            <div class="toc-item"><a href="#table-serial_rule" class="toc-link">serial_rule - 共享编号规则</a></div>
+            <div class="toc-item"><a href="#table-serial_unique_value" class="toc-link">serial_unique_value - 共享编号唯一值</a></div>
+            <div class="toc-item"><a href="#table-form_draft" class="toc-link">form_draft - 草稿</a></div>
+            <div class="toc-item"><a href="#table-proc_variable" class="toc-link">proc_variable - 流程运行中环境变量</a></div>
+            <div class="toc-item"><a href="#table-proc_log" class="toc-link">proc_log - 流程日志</a></div>
+            <div class="toc-item"><a href="#table-user_start_department" class="toc-link">user_start_department - 发起的默认部门</a></div>
+            <div class="toc-item"><a href="#table-user_examine_department" class="toc-link">user_examine_department - 审批的默认部门</a></div>
+            <div class="toc-item"><a href="#table-task_todo" class="toc-link">task_todo - 待办任务</a></div>
+            <div class="toc-item"><a href="#table-task_history" class="toc-link">task_history - 任务历史</a></div>
+            <div class="toc-item"><a href="#table-task_share" class="toc-link">task_share - 任务分享</a></div>
+            <div class="toc-item"><a href="#table-filter" class="toc-link">filter - 快捷筛选/过滤器</a></div>
+            <div class="toc-item"><a href="#table-batch_task" class="toc-link">batch_task - 批量任务</a></div>
+            <div class="toc-item"><a href="#table-batch_task_detail" class="toc-link">batch_task_detail - 批量任务详情</a></div>
+            <div class="toc-item"><a href="#table-pdf_task" class="toc-link">pdf_task - PDF任务</a></div>
+            <div class="toc-item"><a href="#table-crontab" class="toc-link">crontab - 计划任务</a></div>
+            <div class="toc-item"><a href="#table-crontab_history" class="toc-link">crontab_history - 计划任务日志</a></div>
+            <div class="toc-item"><a href="#table-thirdparty_platform" class="toc-link">thirdparty_platform - 第三方平台</a></div>
+            <div class="toc-item"><a href="#table-user_openid" class="toc-link">user_openid - 用户OpenID</a></div>
+            <div class="toc-item"><a href="#table-wechat_agent" class="toc-link">wechat_agent - 微信应用</a></div>
+            <div class="toc-item"><a href="#table-message_template" class="toc-link">message_template - 消息模板</a></div>
+            <div class="toc-item"><a href="#table-message_cfg" class="toc-link">message_cfg - 消息配置</a></div>
+            <div class="toc-item"><a href="#table-message_log" class="toc-link">message_log - 消息发送记录</a></div>
+            <div class="toc-item"><a href="#table-message_insite_type" class="toc-link">message_insite_type - 站内消息类型</a></div>
+            <div class="toc-item"><a href="#table-message_insite" class="toc-link">message_insite - 站内消息</a></div>
+            <div class="toc-item"><a href="#table-message_insite_reader" class="toc-link">message_insite_reader - 站内消息读者</a></div>
+            <div class="toc-item"><a href="#table-task_notify_reader" class="toc-link">task_notify_reader - 任务知会阅览</a></div>
+            <div class="toc-item"><a href="#table-user_student" class="toc-link">user_student - 用户学生</a></div>
+            <div class="toc-item"><a href="#table-user_staff" class="toc-link">user_staff - 用户职工</a></div>
+            <div class="toc-item"><a href="#table-users" class="toc-link">users - 用户表</a></div>
+            <div class="toc-item"><a href="#table-user_info" class="toc-link">user_info - 用户公共属性</a></div>
+            <div class="toc-item"><a href="#table-department" class="toc-link">department - 部门</a></div>
+            <div class="toc-item"><a href="#table-user_department" class="toc-link">user_department - 用户部门</a></div>
+            <div class="toc-item"><a href="#table-relation" class="toc-link">relation - 个人关系</a></div>
+            <div class="toc-item"><a href="#table-user_relation" class="toc-link">user_relation - 用户关系</a></div>
+            <div class="toc-item"><a href="#table-job" class="toc-link">job - 岗位</a></div>
+            <div class="toc-item"><a href="#table-user_job" class="toc-link">user_job - 岗位用户</a></div>
+            <div class="toc-item"><a href="#table-user_notice" class="toc-link">user_notice - 用户提醒数量</a></div>
+            <div class="toc-item"><a href="#table-dict" class="toc-link">dict - 码表</a></div>
+            <div class="toc-item"><a href="#table-dict_data" class="toc-link">dict_data - 码表数据</a></div>
+            <div class="toc-item"><a href="#table-developer" class="toc-link">developer - 开发者</a></div>
+            <div class="toc-item"><a href="#table-developer_request_log" class="toc-link">developer_request_log - 开发者请求日志</a></div>
+            <div class="toc-item"><a href="#table-thirdparty_api" class="toc-link">thirdparty_api - 第三方接口</a></div>
+            <div class="toc-item"><a href="#table-thirdparty_script" class="toc-link">thirdparty_script - 脚本</a></div>
+            <div class="toc-item"><a href="#table-system_manager_role" class="toc-link">system_manager_role - 管理员角色</a></div>
+            <div class="toc-item"><a href="#table-system_manager" class="toc-link">system_manager - 管理员</a></div>
+            <div class="toc-item"><a href="#table-runtime_log" class="toc-link">runtime_log - 运行日志</a></div>
+            <div class="toc-item"><a href="#table-sensitive_data_rule" class="toc-link">sensitive_data_rule - 敏感数据规则</a></div>
+            <div class="toc-item"><a href="#table-sensitive_data_log" class="toc-link">sensitive_data_log - 敏感数据记录</a></div>
+            <div class="toc-item"><a href="#table-save_actions" class="toc-link">save_actions - 用户审批时保存的常用意见</a></div>
+            <div class="toc-item"><a href="#table-search_names" class="toc-link">search_names - 搜索名称</a></div>
+            <div class="toc-item"><a href="#table-system_auth_role" class="toc-link">system_auth_role - 后台权限角色</a></div>
+            <div class="toc-item"><a href="#table-system_auth_user" class="toc-link">system_auth_user - 后台权限用户</a></div>
+            <div class="toc-item"><a href="#table-system_auth_authorize" class="toc-link">system_auth_authorize - 后台权限授权用户</a></div>
+            <div class="toc-item"><a href="#table-department_role" class="toc-link">department_role - 部门特殊角色</a></div>
+            <div class="toc-item"><a href="#table-map_config" class="toc-link">map_config - 配置缓存表</a></div>
+            <div class="toc-item"><a href="#table-app_table" class="toc-link">app_table - 数据集</a></div>
+            <div class="toc-item"><a href="#table-app_table_field" class="toc-link">app_table_field - 数据集字段</a></div>
+            <div class="toc-item"><a href="#table-app_table_collect_rule" class="toc-link">app_table_collect_rule - 数据集采集规则</a></div>
+            <div class="toc-item"><a href="#table-excel_import_log" class="toc-link">excel_import_log - Excel导入日志</a></div>
+            <div class="toc-item"><a href="#table-team" class="toc-link">team - 标签</a></div>
+            <div class="toc-item"><a href="#table-team_user" class="toc-link">team_user - 标签用户</a></div>
+            <div class="toc-item"><a href="#table-hot_service" class="toc-link">hot_service - 热门服务</a></div>
+            <div class="toc-item"><a href="#table-identity" class="toc-link">identity - 身份</a></div>
+            <div class="toc-item"><a href="#table-identity_attribute" class="toc-link">identity_attribute - 身份属性</a></div>
+            <div class="toc-item"><a href="#table-project" class="toc-link">project - 专题服务</a></div>
+            <div class="toc-item"><a href="#table-user_attribute" class="toc-link">user_attribute - 用户分级身份表</a></div>
+            <div class="toc-item"><a href="#table-report" class="toc-link">report - 报表</a></div>
+            <div class="toc-item"><a href="#table-data_table" class="toc-link">data_table - 数据集</a></div>
+            <div class="toc-item"><a href="#table-data_table_collection" class="toc-link">data_table_collection - 数据采集规则</a></div>
+            <div class="toc-item"><a href="#table-data_table_collection_log" class="toc-link">data_table_collection_log - 数据采集日志</a></div>
+            <div class="toc-item"><a href="#table-swiper" class="toc-link">swiper - 轮播图管理</a></div>
+            <div class="toc-item"><a href="#table-through_train" class="toc-link">through_train - 系统直通车</a></div>
+            <div class="toc-item"><a href="#table-visits" class="toc-link">visits - 访问统计</a></div>
+            <div class="toc-item"><a href="#table-statistics_app" class="toc-link">statistics_app - 统计-事项所有数据</a></div>
+            <div class="toc-item"><a href="#table-statistics_app_day" class="toc-link">statistics_app_day - 统计-事项每日数据</a></div>
+            <div class="toc-item"><a href="#table-statistics_task_node" class="toc-link">statistics_task_node - 统计-节点相关</a></div>
+            <div class="toc-item"><a href="#table-statistics_task_user" class="toc-link">statistics_task_user - 统计-用户节点相关</a></div>
+            <div class="toc-item"><a href="#table-data_source" class="toc-link">data_source - 数据源</a></div>
+            <div class="toc-item"><a href="#table-action_log" class="toc-link">action_log - 用户操作日志</a></div>
+            <div class="toc-item"><a href="#table-payment_goods" class="toc-link">payment_goods - 支付项目</a></div>
+            <div class="toc-item"><a href="#table-payment_order" class="toc-link">payment_order - 订单表</a></div>
+            <div class="toc-item"><a href="#table-payment_refund" class="toc-link">payment_refund - 退款表</a></div>
+            <div class="toc-item"><a href="#table-payment_feedback" class="toc-link">payment_feedback - 支付反馈</a></div>
+            <div class="toc-item"><a href="#table-app_module_word" class="toc-link">app_module_word - Word组件</a></div>
+            <div class="toc-item"><a href="#table-pdf_batch" class="toc-link">pdf_batch - PDF批次</a></div>
+            <div class="toc-item"><a href="#table-material_picture" class="toc-link">material_picture - 素材库</a></div>
+            <div class="toc-item"><a href="#table-material_classification" class="toc-link">material_classification - 素材分类</a></div>
+            <div class="toc-item"><a href="#table-attachment" class="toc-link">attachment - 附件表</a></div>
+            <div class="toc-item"><a href="#table-tags" class="toc-link">tags - 服务分类</a></div>
+            <div class="toc-item"><a href="#table-hot_keyword" class="toc-link">hot_keyword - 搜索关键字</a></div>
+            <div class="toc-item"><a href="#table-app_special_topic" class="toc-link">app_special_topic - 专题</a></div>
+            <div class="toc-item"><a href="#table-app_special_topic_groups" class="toc-link">app_special_topic_groups - 专题应用组</a></div>
+            <div class="toc-item"><a href="#table-app_special_topic_item" class="toc-link">app_special_topic_item - 专题应用</a></div>
+            <div class="toc-item"><a href="#table-seal" class="toc-link">seal - 公章表</a></div>
+            <div class="toc-item"><a href="#table-seal_user" class="toc-link">seal_user - 公章可用用户表</a></div>
+            <div class="toc-item"><a href="#table-seal_history" class="toc-link">seal_history - 公章使用记录</a></div>
+            <div class="toc-item"><a href="#table-comments" class="toc-link">comments - 评价表</a></div>
+            <div class="toc-item"><a href="#table-message_notify_category" class="toc-link">message_notify_category - 消息通知分类表</a></div>
+            <div class="toc-item"><a href="#table-message_notify" class="toc-link">message_notify - 消息通知</a></div>
+            <div class="toc-item"><a href="#table-feedback_type" class="toc-link">feedback_type - 反馈类型表</a></div>
+            <div class="toc-item"><a href="#table-feedback" class="toc-link">feedback - 反馈详情表</a></div>
+            <div class="toc-item"><a href="#table-database_info" class="toc-link">database_info - 数据库连接信息表</a></div>
+            <div class="toc-item"><a href="#table-notice_setting" class="toc-link">notice_setting - 用户消息设置</a></div>
+            <div class="toc-item"><a href="#table-transfer_data" class="toc-link">transfer_data - 下载记录</a></div>
+            <div class="toc-item"><a href="#table-my_home_apps" class="toc-link">my_home_apps - 用户首页应用</a></div>
+            <div class="toc-item"><a href="#table-user_security_code" class="toc-link">user_security_code - 安全密码</a></div>
+            <div class="toc-item"><a href="#table-app_empower" class="toc-link">app_empower - 事项授权</a></div>
+            <div class="toc-item"><a href="#table-back_up" class="toc-link">back_up - 备份表</a></div>
+            <div class="toc-item"><a href="#table-file_import" class="toc-link">file_import - 文件导入</a></div>
+            <div class="toc-item"><a href="#table-export_logs" class="toc-link">export_logs - 文件流输出记录</a></div>
+            <div class="toc-item"><a href="#table-app_fill" class="toc-link">app_fill - 事项填报</a></div>
+            <div class="toc-item"><a href="#table-app_fill_authorize" class="toc-link">app_fill_authorize - 事项填报授权</a></div>
+            <div class="toc-item"><a href="#table-app_fill_period" class="toc-link">app_fill_period - 事项填报期次</a></div>
+            <div class="toc-item"><a href="#table-upgrade_id_relation" class="toc-link">upgrade_id_relation - 升级ID关系</a></div>
+            <div class="toc-item"><a href="#table-upgrade_task" class="toc-link">upgrade_task - 升级任务</a></div>
+            <div class="toc-item"><a href="#table-upgrade_task_failed" class="toc-link">upgrade_task_failed - 升级任务失败</a></div>
+            <div class="toc-item"><a href="#table-upgrade_app_warnnings" class="toc-link">upgrade_app_warnnings - 升级应用警告</a></div>
+            <div class="toc-item"><a href="#table-push_record" class="toc-link">push_record - 推送记录</a></div>
+            <div class="toc-item"><a href="#table-ocrs" class="toc-link">ocrs - OCR接口</a></div>
+            <div class="toc-item"><a href="#table-app_session_file_download" class="toc-link">app_session_file_download - 会话文件下载</a></div>
+            <div class="toc-item"><a href="#table-visitor_credentials" class="toc-link">visitor_credentials - 访客凭证</a></div>
+            <div class="toc-item"><a href="#table-visitor_credentials_log" class="toc-link">visitor_credentials_log - 访客凭证日志</a></div>
+            <div class="toc-item"><a href="#table-exchange_rate" class="toc-link">exchange_rate - 汇率</a></div>
+            <div class="toc-item"><a href="#table-holidays" class="toc-link">holidays - 节假日</a></div>
+            <div class="toc-item"><a href="#table-form_data_log" class="toc-link">form_data_log - 表单数据日志</a></div>
+            <div class="toc-item"><a href="#table-compliance" class="toc-link">compliance - 合规</a></div>
+            <div class="toc-item"><a href="#table-datacube_data_tag" class="toc-link">datacube_data_tag - 数据立方数据标签</a></div>
+            <div class="toc-item"><a href="#table-data_application" class="toc-link">data_application - 数据应用</a></div>
+            <div class="toc-item"><a href="#table-data_application_role" class="toc-link">data_application_role - 数据应用角色</a></div>
+            <div class="toc-item"><a href="#table-data_application_user" class="toc-link">data_application_user - 数据应用用户</a></div>
+            <div class="toc-item"><a href="#table-data_table_field_weight" class="toc-link">data_table_field_weight - 数据表字段权重</a></div>
+            <div class="toc-item"><a href="#table-third_seal_record" class="toc-link">third_seal_record - 第三方印章记录</a></div>
+            <div class="toc-item"><a href="#table-third_seal_step" class="toc-link">third_seal_step - 第三方印章步骤</a></div>
+            <div class="toc-item"><a href="#table-report_v2" class="toc-link">report_v2 - 新版报表</a></div>
+        </div>
+
+        <!-- app_attribute 表 -->
+        <h2 id="table-app_attribute">app_attribute - 事项属性</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_attribute &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项属性 &nbsp;&nbsp;
+            <strong>描述:</strong> 事项属性:校区、办理形式等
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>dict_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>码表</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>max_len</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>填写数据最大长度</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>required</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否必填</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_category 表 -->
+        <h2 id="table-app_category">app_category - 事项服务分类</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_category &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项服务分类 &nbsp;&nbsp;
+            <strong>描述:</strong> 事项服务分类
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>sort</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>启用状态</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app 表 -->
+        <h2 id="table-app">app - 事项表</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项表 &nbsp;&nbsp;
+            <strong>描述:</strong> 事项表
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项名称（多语言）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>short_name</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项简称（多语言）</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>icon</td>
+                    <td>varchar(128)</td>
+                    <td>128</td>
+                    <td>NOT NULL</td>
+                    <td>图标</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>类型：1表单事项 2流程事项 3第三方事项</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>public_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>已发布版本id</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态：0草稿 1未发布 2待审核 3已发布 4隐藏</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>keywords</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>搜索关键词</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>depart_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>所属部门</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>categorys</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>服务分类</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>identity</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>服务对象</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>visible_roles</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>可见角色</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>apply_roles</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>可申请角色</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>description</td>
+                    <td>text</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>申请说明</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>attributes</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事项属性</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>star</td>
+                    <td>numeric(2,1)</td>
+                    <td>2,1</td>
+                    <td>NOT NULL</td>
+                    <td>事项评分</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>sort</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>agent_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>发消息agent_id</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>创建人</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_administrator_config 表 -->
+        <h2 id="table-app_administrator_config">app_administrator_config - 应用管理员配置</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_administrator_config &nbsp;&nbsp;
+            <strong>中文名:</strong> 应用管理员配置 &nbsp;&nbsp;
+            <strong>描述:</strong> 应用管理员配置
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>app_ids</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>允许同一批人在多个应用拥有相同权限</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>rule</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>规则</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_version 表 -->
+        <h2 id="table-app_version">app_version - 事项版本</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_version &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项版本 &nbsp;&nbsp;
+            <strong>描述:</strong> 事项版本
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>version</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>版本号</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>alias</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>版本别名，例如 beta版，正式版</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态：0显示 1隐藏</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置，表单事项某些配置放在这，比如多步发起和权限</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>operator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>最新操做人uid</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>remarks</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>备注</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_module 表 -->
+        <h2 id="table-app_module">app_module - 应用组件</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_module &nbsp;&nbsp;
+            <strong>中文名:</strong> 应用组件 &nbsp;&nbsp;
+            <strong>描述:</strong> 应用组件，目前仅有 表单、流程、 触发器
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_module_version 表 -->
+        <h2 id="table-app_module_version">app_module_version - 组件版本</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_module_version &nbsp;&nbsp;
+            <strong>中文名:</strong> 组件版本 &nbsp;&nbsp;
+            <strong>描述:</strong> 组件版本
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>module_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联模块</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联应用版本</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>version</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>版本号,顺序增长</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否启用</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>alias</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>别名</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_node_stat 表 -->
+        <h2 id="table-app_node_stat">app_node_stat - 应用节点统计</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_node_stat &nbsp;&nbsp;
+            <strong>中文名:</strong> 应用节点统计 &nbsp;&nbsp;
+            <strong>描述:</strong> 应用节点统计
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>times</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>发起次数</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>persons</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>申请人数</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>views</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>查看次数</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_form_auth 表 -->
+        <h2 id="table-app_form_auth">app_form_auth - 事项表单权限</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_form_auth &nbsp;&nbsp;
+            <strong>中文名:</strong> 事项表单权限 &nbsp;&nbsp;
+            <strong>描述:</strong> 事项表单权限
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联应用版本</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>action</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>点号分隔，从高到低:  examine.UserTask_xxx.1</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>auth</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>权限</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>showform</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>显示表单</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- trigger_type 表 -->
+        <h2 id="table-trigger_type">trigger_type - 触发器模板</h2>
+        <div class="table-info">
+            <strong>表名:</strong> trigger_type &nbsp;&nbsp;
+            <strong>中文名:</strong> 触发器模板 &nbsp;&nbsp;
+            <strong>描述:</strong> 自定义触发器模板
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>varchar(16)</td>
+                    <td>16</td>
+                    <td>NOT NULL</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>events</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>app_ids</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项，-1的全部可用</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- trigger 表 -->
+        <h2 id="table-trigger">trigger - 触发器</h2>
+        <div class="table-info">
+            <strong>表名:</strong> trigger &nbsp;&nbsp;
+            <strong>中文名:</strong> 触发器 &nbsp;&nbsp;
+            <strong>描述:</strong> 触发器
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>varchar(64)</td>
+                    <td>64</td>
+                    <td>NOT NULL</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联应用版本，-1的是全局</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>非内置模板，使用validate.$id格式</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>events</td>
+                    <td>varchar[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>事件</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>priority</td>
+                    <td>INT</td>
+                    <td></td>
+                    <td>DEFAULT 0</td>
+                    <td>优先级</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>enable</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>启用状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_stat 表 -->
+        <h2 id="table-app_stat">app_stat - 统计</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_stat &nbsp;&nbsp;
+            <strong>中文名:</strong> 统计 &nbsp;&nbsp;
+            <strong>描述:</strong> 统计
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联应用版本</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>stat_key</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>统计key, 凌晨计划任务写入</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>val</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>值</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>stat_day</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>格式20220202</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- proc_node 表 -->
+        <h2 id="table-proc_node">proc_node - 流程环节</h2>
+        <div class="table-info">
+            <strong>表名:</strong> proc_node &nbsp;&nbsp;
+            <strong>中文名:</strong> 流程环节 &nbsp;&nbsp;
+            <strong>描述:</strong> 流程环节, 原bpmn_node
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>module_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联模块版本</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>node_key</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>节点键</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>node_name</td>
+                    <td>varchar(100)</td>
+                    <td>100</td>
+                    <td>NOT NULL</td>
+                    <td>节点名称</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>node_type</td>
+                    <td>varchar(32)</td>
+                    <td>32</td>
+                    <td>NOT NULL</td>
+                    <td>节点类型</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>node_parent_key</td>
+                    <td>varchar(60)</td>
+                    <td>60</td>
+                    <td>NOT NULL</td>
+                    <td>父节点键</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_session 表 -->
+        <h2 id="table-app_session">app_session - 代发起</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_session &nbsp;&nbsp;
+            <strong>中文名:</strong> 代发起 &nbsp;&nbsp;
+            <strong>描述:</strong> 代发起 能否 在驳回环节代处理？
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联事项</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>task_name</td>
+                    <td>varchar(255)</td>
+                    <td>255</td>
+                    <td>NOT NULL</td>
+                    <td>任务名称</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>app_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联应用版本</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>proc_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>关联流程版本</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>creator</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>显示发起人, a代b发起， 存b. 匿名发起 存 0</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>agent</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>代发起人 a代b发起，存a。匿名发起， 存实际发起人</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>department_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>部门ID</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>anonymous</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否匿名</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>extra</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>额外信息</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>is_test</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>是否测试</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>snapshot</td>
+                    <td>jsonb</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>快照 用于撤回操作</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>step</td>
+                    <td>smallint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>步骤</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>process_data</td>
+                    <td>text</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>需要存serialize数据，不方便用json</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>created</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td>NOT NULL</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>finished</td>
+                    <td>timestamp(0)</td>
+                    <td>0</td>
+                    <td></td>
+                    <td>完成时间</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- app_session_status 表 -->
+        <h2 id="table-app_session_status">app_session_status - 会话状态</h2>
+        <div class="table-info">
+            <strong>表名:</strong> app_session_status &nbsp;&nbsp;
+            <strong>中文名:</strong> 会话状态 &nbsp;&nbsp;
+            <strong>描述:</strong> 会话状态
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>flags</td>
+                    <td>int[]</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>标志</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- form_data 表 -->
+        <h2 id="table-form_data">form_data - 表单数据</h2>
+        <div class="table-info">
+            <strong>表名:</strong> form_data &nbsp;&nbsp;
+            <strong>中文名:</strong> 表单数据 &nbsp;&nbsp;
+            <strong>描述:</strong> 表单数据
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>serial</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>主键，自增ID</td>
+                    <td>YES</td>
+                </tr>
+                <tr class="relation-field">
+                    <td>sess_id</td>
+                    <td>bigint</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>会话ID</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>form_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单ID</td>
+                    <td></td>
+                </tr>
+                <tr class="relation-field">
+                    <td>form_version_id</td>
+                    <td>int</td>
+                    <td></td>
+                    <td>NOT NULL</td>
+                    <td>表单版本ID</td>
+                    <td></td>
+                </tr>

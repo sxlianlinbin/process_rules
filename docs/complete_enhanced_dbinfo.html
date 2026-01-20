@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完整增强版数据库表结构文档</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .table-section {
+            margin-bottom: 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .table-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .table-info {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .primary-key {
+            background-color: #e6f3ff;
+            font-weight: bold;
+        }
+        .foreign-key {
+            background-color: #fff2e6; /* 橙色背景表示外键 */
+        }
+        .relation-field {
+            background-color: #e6ffe6; /* 绿色背景表示关联字段 */
+        }
+        .legend {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-left: 4px solid #4CAF50;
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            padding: 5px 10px;
+        }
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .foreign-key-legend {
+            background-color: #fff2e6;
+        }
+        .relation-field-legend {
+            background-color: #e6ffe6;
+        }
+        .primary-key-legend {
+            background-color: #e6f3ff;
+        }
+        .nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-menu h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .nav-menu ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .nav-menu li {
+            margin: 5px 0;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 14px;
+        }
+        .nav-menu a:hover {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>完整增强版数据库表结构文档</h1>
+        
+        <div class="legend">
+            <h3>图例说明：</h3>
+            <div class="legend-item">
+                <span class="legend-color primary-key-legend"></span>
+                主键
+            </div>
+            <div class="legend-item">
+                <span class="legend-color foreign-key-legend"></span>
+                外键字段
+            </div>
+            <div class="legend-item">
+                <span class="legend-color relation-field-legend"></span>
+                关联关系字段
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <h3>表目录</h3>
+            <ul>
+                <li><a href="#users">users - 用户表</a></li>
+                <li><a href="#department">department - 部门表</a></li>
+                <li><a href="#user_department">user_department - 用户部门关联表</a></li>
+                <li><a href="#job">job - 岗位表</a></li>
+                <li><a href="#user_job">user_job - 用户岗位关联表</a></li>
+                <li><a href="#team">team - 标签表</a></li>
+                <li><a href="#team_user">team_user - 标签用户关联表</a></li>
+                <li><a href="#app">app - 事项表</a></li>
+                <li><a href="#app_session">app_session - 实例表</a></li>
+                <li><a href="#identity">identity - 身份表</a></li>
+                <li><a href="#identity_attribute">identity_attribute - 身份属性表</a></li>
+                <li><a href="#app_version">app_version - 事项版本表</a></li>
+                <li><a href="#app_module">app_module - 应用组件表</a></li>
+                <li><a href="#app_module_version">app_module_version - 组件版本表</a></li>
+                <li><a href="#proc_node">proc_node - 流程节点表</a></li>
+                <li><a href="#app_session_status">app_session_status - 实例状态表</a></li>
+                <li><a href="#form_data">form_data - 表单数据表</a></li>
+                <li><a href="#proc_variable">proc_variable - 流程变量表</a></li>
+                <li><a href="#proc_log">proc_log - 流程日志表</a></li>
+                <li><a href="#task_todo">task_todo - 待办任务表</a></li>
+                <li><a href="#task_history">task_history - 历史任务表</a></li>
+                <li><a href="#task_share">task_share - 任务分享表</a></li>
+                <li><a href="#filter">filter - 过滤器表</a></li>
+                <li><a href="#batch_task">batch_task - 批量任务表</a></li>
+                <li><a href="#batch_task_detail">batch_task_detail - 批量任务详情表</a></li>
+                <li><a href="#pdf_task">pdf_task - PDF任务表</a></li>
+                <li><a href="#crontab">crontab - 计划任务表</a></li>
+                <li><a href="#crontab_history">crontab_history - 计划任务历史表</a></li>
+                <li><a href="#thirdparty_platform">thirdparty_platform - 第三方平台表</a></li>
+                <li><a href="#user_openid">user_openid - 用户OpenID表</a></li>
+                <li><a href="#wechat_agent">wechat_agent - 微信代理表</a></li>
+                <li><a href="#message_cfg">message_cfg - 消息配置表</a></li>
+                <li><a href="#message_log">message_log - 消息日志表</a></li>
+                <li><a href="#message_insite">message_insite - 站内消息表</a></li>
+                <li><a href="#message_insite_reader">message_insite_reader - 站内消息阅读表</a></li>
+                <li><a href="#task_notify_reader">task_notify_reader - 任务通知阅读表</a></li>
+                <li><a href="#user_info">user_info - 用户信息表</a></li>
+                <li><a href="#dict">dict - 码表表</a></li>
+                <li><a href="#dict_data">dict_data - 码表数据表</a></li>
+                <li><a href="#developer">developer - 开发者表</a></li>
+                <li><a href="#developer_request_log">developer_request_log - 开发者请求日志表</a></li>
+                <li><a href="#thirdparty_api">thirdparty_api - 第三方接口表</a></li>
+                <li><a href="#thirdparty_script">thirdparty_script - 第三方脚本表</a></li>
+                <li><a href="#system_auth_authorize">system_auth_authorize - 系统授权表</a></li>
+                <li><a href="#department_role">department_role - 部门角色表</a></li>
+                <li><a href="#map_config">map_config - 配置缓存表</a></li>
+                <li><a href="#app_table">app_table - 应用数据表</a></li>
+                <li><a href="#app_table_field">app_table_field - 应用数据表字段表</a></li>
+                <li><a href="#app_table_collect_rule">app_table_collect_rule - 应用数据表采集规则表</a></li>
+                <li><a href="#excel_import_log">excel_import_log - Excel导入日志表</a></li>
+                <li><a href="#hot_service">hot_service - 热门服务表</a></li>
+                <li><a href="#user_attribute">user_attribute - 用户属性表</a></li>
+                <li><a href="#report">report - 报表表</a></li>
+                <li><a href="#data_table">data_table - 数据集表</a></li>
+                <li><a href="#data_table_collection">data_table_collection - 数据采集规则表</a></li>
+                <li><a href="#data_table_collection_log">data_table_collection_log - 数据采集日志表</a></li>
+                <li><a href="#swiper">swiper - 轮播图表</a></li>
+                <li><a href="#through_train">through_train - 直通车表</a></li>
+                <li><a href="#visits">visits - 访问统计表</a></li>
+                <li><a href="#statistics_app">statistics_app - 事项统计表</a></li>
+                <li><a href="#statistics_app_day">statistics_app_day - 事项每日统计表</a></li>
+                <li><a href="#statistics_task_node">statistics_task_node - 任务节点统计表</a></li>
+                <li><a href="#statistics_task_user">statistics_task_user - 任务用户统计表</a></li>
+                <li><a href="#data_source">data_source - 数据源表</a></li>
+                <li><a href="#action_log">action_log - 操作日志表</a></li>
+                <li><a href="#payment_goods">payment_goods - 支付项目表</a></li>
+                <li><a href="#payment_order">payment_order - 支付订单表</a></li>
+                <li><a href="#payment_refund">payment_refund - 支付退款表</a></li>
+                <li><a href="#payment_feedback">payment_feedback - 支付反馈表</a></li>
+                <li><a href="#app_module_word">app_module_word - 应用组件Word表</a></li>
+                <li><a href="#pdf_batch">pdf_batch - PDF批量表</a></li>
+                <li><a href="#material_picture">material_picture - 素材图片表</a></li>
+                <li><a href="#material_classification">material_classification - 素材分类表</a></li>
+                <li><a href="#attachment">attachment - 附件表</a></li>
+                <li><a href="#tags">tags - 标签表</a></li>
+                <li><a href="#hot_keyword">hot_keyword - 热门关键词表</a></li>
+                <li><a href="#app_special_topic">app_special_topic - 专题表</a></li>
+                <li><a href="#app_special_topic_groups">app_special_topic_groups - 专题组表</a></li>
+                <li><a href="#app_special_topic_item">app_special_topic_item - 专题项目表</a></li>
+                <li><a href="#seal">seal - 公章表</a></li>
+                <li><a href="#seal_user">seal_user - 公章用户表</a></li>
+                <li><a href="#seal_history">seal_history - 公章历史表</a></li>
+                <li><a href="#comments">comments - 评论表</a></li>
+                <li><a href="#message_notify">message_notify - 消息通知表</a></li>
+                <li><a href="#feedback_type">feedback_type - 反馈类型表</a></li>
+                <li><a href="#feedback">feedback - 反馈表</a></li>
+                <li><a href="#database_info">database_info - 数据库信息表</a></li>
+                <li><a href="#notice_setting">notice_setting - 通知设置表</a></li>
+                <li><a href="#transfer_data">transfer_data - 数据传输表</a></li>
+                <li><a href="#my_home_apps">my_home_apps - 我的应用表</a></li>
+                <li><a href="#user_security_code">user_security_code - 用户安全码表</a></li>
+                <li><a href="#back_up">back_up - 备份表</a></li>
+                <li><a href="#file_import">file_import - 文件导入表</a></li>
+                <li><a href="#export_logs">export_logs - 导出日志表</a></li>
+                <li><a href="#app_fill">app_fill - 应用填报表</a></li>
+                <li><a href="#app_fill_authorize">app_fill_authorize - 应用填报授权表</a></li>
+                <li><a href="#app_fill_period">app_fill_period - 应用填报期次表</a></li>
+                <li><a href="#visitor_credentials">visitor_credentials - 访客凭证表</a></li>
+                <li><a href="#visitor_credentials_log">visitor_credentials_log - 访客凭证日志表</a></li>
+                <li><a href="#exchange_rate">exchange_rate - 汇率表</a></li>
+                <li><a href="#holidays">holidays - 节假日表</a></li>
+                <li><a href="#form_data_log">form_data_log - 表单数据日志表</a></li>
+                <li><a href="#compliance">compliance - 合规表</a></li>
+                <li><a href="#datacube_data_tag">datacube_data_tag - 数据立方标签表</a></li>
+                <li><a href="#data_application">data_application - 数据应用表</a></li>
+                <li><a href="#data_application_role">data_application_role - 数据应用角色表</a></li>
+                <li><a href="#data_application_user">data_application_user - 数据应用用户表</a></li>
+                <li><a href="#data_table_field_weight">data_table_field_weight - 数据表字段权重表</a></li>
+                <li><a href="#third_seal_record">third_seal_record - 第三方印章记录表</a></li>
+                <li><a href="#third_seal_step">third_seal_step - 第三方印章步骤表</a></li>
+                <li><a href="#report_v2">report_v2 - 报表V2表</a></li>
+                <li><a href="#relations_summary">表关系总结</a></li>
+            </ul>
+        </div>
+
+        <!-- Users Table -->
+        <div class="table-section" id="users">
+            <div class="table-header">users 用户表</div>
+            <div class="table-info">存储系统用户的基本信息</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>128</td>
+                    <td>NO</td>
+                    <td>姓名</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>avatar</td>
+                    <td>varchar</td>
+                    <td>100</td>
+                    <td>NO</td>
+                    <td>头像</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>username</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>用户名</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>password</td>
+                    <td>varchar</td>
+                    <td>120</td>
+                    <td>NO</td>
+                    <td>密码</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sex</td>
+                    <td>varchar</td>
+                    <td>20</td>
+                    <td>NO</td>
+                    <td>性别</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>identity_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>身份id (关联 identity 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>mobile</td>
+                    <td>varchar</td>
+                    <td>20</td>
+                    <td>NO</td>
+                    <td>手机号</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>email</td>
+                    <td>varchar</td>
+                    <td>64</td>
+                    <td>NO</td>
+                    <td>邮箱</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>identity_type</td>
+                    <td>varchar</td>
+                    <td>60</td>
+                    <td>NO</td>
+                    <td>身份类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>source_type</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>来源类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>del_time</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td></td>
+                    <td>删除时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>default_department_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>默认部门id (关联 department 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>number</td>
+                    <td>varchar</td>
+                    <td>100</td>
+                    <td>NO</td>
+                    <td>工号</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Department Table -->
+        <div class="table-section" id="department">
+            <div class="table-header">department 部门表</div>
+            <div class="table-info">存储系统部门的层级结构信息</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>部门ID</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>128</td>
+                    <td>NO</td>
+                    <td>部门名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>short_name</td>
+                    <td>varchar</td>
+                    <td>64</td>
+                    <td>NO</td>
+                    <td>部门简称</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sn</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>部门编号</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="relation-field">
+                    <td>pid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>上级部门ID (自关联字段)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人ID (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>is_second_department</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>是否是二级部门</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>second_department_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>二级部门id</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>is_sync</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>是否同步</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- User-Department Relation Table -->
+        <div class="table-section" id="user_department">
+            <div class="table-header">user_department 用户部门关联表</div>
+            <div class="table-info">存储用户与部门的多对多关系</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>uid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>用户id (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>department_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>部门id (关联 department 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>is_default</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>是否默认部门</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>zw</td>
+                    <td>varchar</td>
+                    <td>500</td>
+                    <td>NO</td>
+                    <td>职位</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>bm</td>
+                    <td>varchar</td>
+                    <td>500</td>
+                    <td>NO</td>
+                    <td>部门</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Job Table -->
+        <div class="table-section" id="job">
+            <div class="table-header">job 岗位表</div>
+            <div class="table-info">存储系统岗位信息</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>128</td>
+                    <td>NO</td>
+                    <td>岗位名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- User-Job Relation Table -->
+        <div class="table-section" id="user_job">
+            <div class="table-header">user_job 用户岗位关联表</div>
+            <div class="table-info">存储用户与岗位的多对多关系</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>Length</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>job_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>岗位id (关联 job 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>uid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>用户id (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>depart_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>部门id (关联 department 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Team Table -->
+        <div class="table-section" id="team">
+            <div class="table-header">team 标签表</div>
+            <div class="table-info">存储系统标签/分组信息</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>type</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>类型(0 标签组 1 静态标签 2 动态标签)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>100</td>
+                    <td>NO</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="relation-field">
+                    <td>pid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>标签组id (自关联字段)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sync_config</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>设置规则</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>updated</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>更新时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Team-User Relation Table -->
+        <div class="table-section" id="team_user">
+            <div class="table-header">team_user 标签用户关联表</div>
+            <div class="table-info">存储标签与用户的多对多关系</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>team_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>标签id (关联 team 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>uid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>用户id (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Table -->
+        <div class="table-section" id="app">
+            <div class="table-header">app 事项表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>事项名称(多语言)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>short_name</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>事项简称(多语言)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>icon</td>
+                    <td>varchar</td>
+                    <td>128</td>
+                    <td>NO</td>
+                    <td>图标</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>type</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>类型(1表单事项 2流程事项 3第三方事项)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>public_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>已发布版本id</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态(0草稿 1未发布 2待审核 3已发布 4隐藏)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>keywords</td>
+                    <td>varchar[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>搜索关键词</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>depart_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>所属部门 (关联 department 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>categorys</td>
+                    <td>int[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>服务分类</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>identity</td>
+                    <td>int[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>服务对象</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>visible_roles</td>
+                    <td>varchar[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>可见角色</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>apply_roles</td>
+                    <td>varchar[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>可申请角色</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>description</td>
+                    <td>text</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>申请说明</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>attributes</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>事项属性</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>star</td>
+                    <td>numeric</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>事项评分</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>sort</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>排序</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>agent_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>发消息agent_id</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Session Table -->
+        <div class="table-section" id="app_session">
+            <div class="table-header">app_session 实例表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int8</td>
+                    <td>8</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>app_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>事项id (关联 app 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>task_name</td>
+                    <td>varchar</td>
+                    <td>255</td>
+                    <td>NO</td>
+                    <td>任务名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>app_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>事项版本id (关联 app_version 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>proc_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>流程版本id (关联 app_module_version 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>agent</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>代发起人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>department_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>部门id (关联 department 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>anonymous</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>是否匿名</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>extra</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>额外信息</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>is_test</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>是否测试</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>snapshot</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>快照</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>step</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>步骤</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>process_data</td>
+                    <td>text</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>流程数据</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>finished</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td></td>
+                    <td>完成时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- System Auth Authorize Table -->
+        <div class="table-section" id="system_auth_authorize">
+            <div class="table-header">system_auth_authorize 应用系统授权表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>type</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>授权类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>dataids</td>
+                    <td>int[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>授权数据id</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>auths</td>
+                    <td>varchar[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>授权权限</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>extra</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>额外参数</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>users</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>被授权人</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>roles</td>
+                    <td>varchar[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>角色</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>silent_auth_type</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>静默授权类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Identity Table -->
+        <div class="table-section" id="identity">
+            <div class="table-header">identity 身份表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>code</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>代码</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>128</td>
+                    <td>NO</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="relation-field">
+                    <td>pid</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>父类id (自关联字段)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>type</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>身份类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>index_status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>首页配置</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Identity Attribute Table -->
+        <div class="table-section" id="identity_attribute">
+            <div class="table-header">identity_attribute 身份属性表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>identity_id</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>身份id (关联 identity 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>key</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>属性键</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>属性名</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>dict_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>码表id (关联 dict 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>max_len</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>最大长度</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Version Table -->
+        <div class="table-section" id="app_version">
+            <div class="table-header">app_version 事项版本表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>app_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>事项id (关联 app 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>version</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>版本号</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>alias</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>版本别名</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>status</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>operator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>操作人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>remarks</td>
+                    <td>varchar</td>
+                    <td>255</td>
+                    <td>NO</td>
+                    <td>备注</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Module Table -->
+        <div class="table-section" id="app_module">
+            <div class="table-header">app_module 应用组件表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr>
+                    <td>type</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>name</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>app_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>事项id (关联 app 表)</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Module Version Table -->
+        <div class="table-section" id="app_module_version">
+            <div class="table-header">app_module_version 组件版本表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>module_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>组件id (关联 app_module 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>app_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>事项版本id (关联 app_version 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>version</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>版本号</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>enable</td>
+                    <td>int2</td>
+                    <td>2</td>
+                    <td>NO</td>
+                    <td>启用状态</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>alias</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>别名</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Proc Node Table -->
+        <div class="table-section" id="proc_node">
+            <div class="table-header">proc_node 流程节点表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>module_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>组件版本id (关联 app_module_version 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>node_key</td>
+                    <td>varchar</td>
+                    <td>60</td>
+                    <td>NO</td>
+                    <td>节点键</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>node_name</td>
+                    <td>varchar</td>
+                    <td>100</td>
+                    <td>NO</td>
+                    <td>节点名称</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>node_type</td>
+                    <td>varchar</td>
+                    <td>32</td>
+                    <td>NO</td>
+                    <td>节点类型</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>config</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>配置</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>modified</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>修改时间</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>node_parent_key</td>
+                    <td>varchar</td>
+                    <td>60</td>
+                    <td>NO</td>
+                    <td>父节点键</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- App Session Status Table -->
+        <div class="table-section" id="app_session_status">
+            <div class="table-header">app_session_status 实例状态表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>sess_id</td>
+                    <td>int8</td>
+                    <td>8</td>
+                    <td>NO</td>
+                    <td>实例id (关联 app_session 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>flags</td>
+                    <td>int[]</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>标志数组</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Form Data Table -->
+        <div class="table-section" id="form_data">
+            <div class="table-header">form_data 表单数据表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>sess_id</td>
+                    <td>int8</td>
+                    <td>8</td>
+                    <td>NO</td>
+                    <td>实例id (关联 app_session 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>form_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>表单id (关联 app_module 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>form_version_id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>表单版本id (关联 app_module_version 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>data</td>
+                    <td>jsonb</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>数据</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>creator</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>创建人 (关联 users 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>created</td>
+                    <td>timestamp</td>
+                    <td>-</td>
+                    <td>NO</td>
+                    <td>创建时间</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Proc Variable Table -->
+        <div class="table-section" id="proc_variable">
+            <div class="table-header">proc_variable 流程变量表</div>
+            <table>
+                <tr>
+                    <th>字段名</th>
+                    <th>类型</th>
+                    <th>长度</th>
+                    <th>可否空</th>
+                    <th>注释</th>
+                    <th>主键</th>
+                </tr>
+                
+                <tr class="primary-key">
+                    <td>id</td>
+                    <td>int4</td>
+                    <td>4</td>
+                    <td>NO</td>
+                    <td>主键</td>
+                    <td>YES</td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>sess_id</td>
+                    <td>int8</td>
+                    <td>8</td>
+                    <td>NO</td>
+                    <td>实例id (关联 app_session 表)</td>
+                    <td></td>
+                </tr>
+                
+                <tr class="foreign-key">
+                    <td>execute_id</td>
+                    <td>int8</td>
+                    <td>8</td>
+                    <td>NO</td>
+                    <td>执行id</td>
+                    <td></td>
+                </tr>
+                
+                <tr>
+                    <td>name
